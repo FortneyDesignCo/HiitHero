@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls:*)",
+      "Bash(npx:*)",
+      "Bash(python3 -m http.server:*)",
+      "Bash(where:*)",
+      "Bash(start \"\" \"C:\\\\Users\\\\KTFor\\\\OneDrive\\\\Desktop\\\\HiitHero\\\\index.html\")",
+      "Bash(start chrome:*)"
+    ]
+  }
+}
