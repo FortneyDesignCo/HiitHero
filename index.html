@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0f0f1a">
+  <meta name="description" content="HiitHero - Customizable HIIT Interval Timer">
+  <title>HiitHero</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-phase="idle">
+
+  <!-- ===== SETUP SCREEN ===== -->
+  <main id="setup-screen" class="screen screen--active">
+    <header class="setup-header">
+      <h1 class="logo">Hiit<span class="logo-accent">Hero</span></h1>
+      <p class="tagline">Interval Timer</p>
+    </header>
+
+    <form id="settings-form" class="settings-form" aria-label="Workout settings">
+      <!-- Work Duration -->
+      <div class="setting-group">
+        <label class="setting-label" for="work-duration">Work</label>
+        <div class="stepper">
+          <button type="button" class="stepper__btn" data-target="work-duration" data-delta="-5" aria-label="Decrease work time by 5 seconds">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+          <div class="stepper__value-wrapper">
+            <input type="number" id="work-duration" class="stepper__input" min="5" max="300" value="30" step="5" inputmode="numeric" aria-label="Work duration in seconds">
+            <span class="stepper__unit">sec</span>
+          </div>
+          <button type="button" class="stepper__btn" data-target="work-duration" data-delta="5" aria-label="Increase work time by 5 seconds">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Rest Duration -->
+      <div class="setting-group">
+        <label class="setting-label" for="rest-duration">Rest</label>
+        <div class="stepper">
+          <button type="button" class="stepper__btn" data-target="rest-duration" data-delta="-5" aria-label="Decrease rest time by 5 seconds">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+          <div class="stepper__value-wrapper">
+            <input type="number" id="rest-duration" class="stepper__input" min="5" max="300" value="15" step="5" inputmode="numeric" aria-label="Rest duration in seconds">
+            <span class="stepper__unit">sec</span>
+          </div>
+          <button type="button" class="stepper__btn" data-target="rest-duration" data-delta="5" aria-label="Increase rest time by 5 seconds">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Number of Rounds -->
+      <div class="setting-group">
+        <label class="setting-label" for="num-rounds">Rounds</label>
+        <div class="stepper">
+          <button type="button" class="stepper__btn" data-target="num-rounds" data-delta="-1" aria-label="Decrease rounds by 1">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+          <div class="stepper__value-wrapper">
+            <input type="number" id="num-rounds" class="stepper__input" min="1" max="50" value="8" step="1" inputmode="numeric" aria-label="Number of rounds">
+          </div>
+          <button type="button" class="stepper__btn" data-target="num-rounds" data-delta="1" aria-label="Increase rounds by 1">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Total Time Preview -->
+      <div class="total-time" aria-live="polite">
+        Total: <span id="total-time-display">6:00</span>
+      </div>
+
+      <button type="submit" id="start-btn" class="btn btn--start">
+        Start Workout
+      </button>
+    </form>
+  </main>
+
+  <!-- ===== TIMER SCREEN ===== -->
+  <main id="timer-screen" class="screen">
+    <!-- Phase indicator banner -->
+    <div id="phase-banner" class="phase-banner" aria-live="assertive">
+      <span id="phase-label">GET READY</span>
+    </div>
+
+    <!-- Round counter -->
+    <div id="round-display" class="round-display" aria-live="polite">
+      Round <span id="current-round">1</span> / <span id="total-rounds">8</span>
+    </div>
+
+    <!-- Timer ring + countdown -->
+    <div class="timer-ring-container">
+      <svg class="progress-ring" viewBox="0 0 240 240" aria-hidden="true">
+        <circle class="progress-ring__bg" cx="120" cy="120" r="105"/>
+        <circle id="progress-ring__fill" class="progress-ring__fill" cx="120" cy="120" r="105"/>
+      </svg>
+      <div id="timer-display" class="timer-display" role="timer" aria-atomic="true">
+        <span id="timer-seconds-display" class="timer-display__time">30</span>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls" role="group" aria-label="Timer controls">
+      <button id="reset-btn" class="btn btn--control" aria-label="Reset workout">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+        </svg>
+      </button>
+      <button id="playpause-btn" class="btn btn--playpause" aria-label="Pause workout">
+        <svg id="pause-icon" class="control-icon" width="36" height="36" viewBox="0 0 24 24" fill="currentColor">
+          <rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/>
+        </svg>
+        <svg id="play-icon" class="control-icon control-icon--hidden" width="36" height="36" viewBox="0 0 24 24" fill="currentColor">
+          <polygon points="5,3 19,12 5,21"/>
+        </svg>
+      </button>
+      <button id="skip-btn" class="btn btn--control" aria-label="Skip to next phase">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="5,4 15,12 5,20" fill="currentColor"/><line x1="19" y1="5" x2="19" y2="19"/>
+        </svg>
+      </button>
+    </div>
+  </main>
+
+  <!-- ===== COMPLETE SCREEN ===== -->
+  <main id="complete-screen" class="screen">
+    <div class="complete-content">
+      <div class="complete-icon" aria-hidden="true">
+        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+        </svg>
+      </div>
+      <h2 class="complete-title">Workout Complete!</h2>
+      <p id="workout-summary" class="complete-summary"></p>
+      <button id="done-btn" class="btn btn--start">New Workout</button>
+    </div>
+  </main>
+
+  <script src="js/sound.js"></script>
+  <script src="js/wakelock.js"></script>
+  <script src="js/timer.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
