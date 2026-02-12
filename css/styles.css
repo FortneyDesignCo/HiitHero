@@ -1,0 +1,541 @@
+/* ===========================
+   HiitHero - Styles
+   1. Custom Properties
+   2. Reset / Base
+   3. Typography
+   4. Screen Layout
+   5. Setup Screen
+   6. Stepper Component
+   7. Timer Screen
+   8. Progress Ring
+   9. Controls
+   10. Complete Screen
+   11. Buttons
+   12. Phase States
+   13. Animations
+   14. Media Queries
+   =========================== */
+
+/* ----- 1. Custom Properties ----- */
+:root {
+  --color-bg: #0f0f1a;
+  --color-surface: #1a1a2e;
+  --color-surface-raised: #252540;
+  --color-border: #2a2a45;
+  --color-text-primary: #eeeef4;
+  --color-text-secondary: #8888a0;
+  --color-text-muted: #55556a;
+
+  --color-work: #00e676;
+  --color-work-glow: rgba(0, 230, 118, 0.15);
+  --color-work-bg: #0a1a12;
+  --color-rest: #448aff;
+  --color-rest-glow: rgba(68, 138, 255, 0.15);
+  --color-rest-bg: #0a1220;
+  --color-countdown: #ffab40;
+  --color-countdown-bg: #1a1508;
+
+  --color-accent: #ff6b35;
+  --color-accent-hover: #ff8555;
+  --color-complete: #00e676;
+
+  --timer-font-size: clamp(3.5rem, 18vw, 7rem);
+  --btn-min-size: 52px;
+  --border-radius: 14px;
+  --border-radius-sm: 10px;
+  --spacing: 8px;
+
+  --ring-size: min(65vw, 280px);
+  --ring-circumference: 659.73; /* 2 * PI * 105 */
+
+  --transition-phase: 0.4s ease;
+}
+
+/* ----- 2. Reset / Base ----- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: manipulation;
+  transition: background-color var(--transition-phase);
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+button {
+  font-family: inherit;
+  border: none;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  background: none;
+  color: inherit;
+  touch-action: manipulation;
+}
+
+/* ----- 3. Typography ----- */
+.logo {
+  font-size: clamp(2rem, 8vw, 3rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--color-text-primary);
+}
+
+.logo-accent {
+  color: var(--color-accent);
+}
+
+.tagline {
+  font-size: 0.95rem;
+  color: var(--color-text-secondary);
+  margin-top: calc(var(--spacing) * 0.5);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ----- 4. Screen Layout ----- */
+.screen {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100dvh;
+  min-height: -webkit-fill-available;
+  padding: calc(var(--spacing) * 3);
+  position: relative;
+  animation: fadeIn 0.3s ease;
+}
+
+.screen--active {
+  display: flex;
+}
+
+/* ----- 5. Setup Screen ----- */
+.setup-header {
+  text-align: center;
+  margin-bottom: calc(var(--spacing) * 5);
+}
+
+.settings-form {
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 2.5);
+}
+
+.setting-group {
+  background: var(--color-surface);
+  border-radius: var(--border-radius);
+  padding: calc(var(--spacing) * 2) calc(var(--spacing) * 2.5);
+  border: 1px solid var(--color-border);
+}
+
+.setting-label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: calc(var(--spacing) * 1.5);
+}
+
+.total-time {
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  padding: calc(var(--spacing) * 1.5) 0;
+}
+
+#total-time-display {
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+/* ----- 6. Stepper Component ----- */
+.stepper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(var(--spacing) * 1.5);
+}
+
+.stepper__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--btn-min-size);
+  height: var(--btn-min-size);
+  border-radius: 50%;
+  background: var(--color-surface-raised);
+  color: var(--color-text-primary);
+  transition: background-color 0.15s ease, transform 0.1s ease;
+  flex-shrink: 0;
+}
+
+.stepper__btn:active {
+  transform: scale(0.92);
+  background: var(--color-border);
+}
+
+.stepper__value-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.stepper__input {
+  width: 100%;
+  max-width: 80px;
+  text-align: center;
+  background: none;
+  border: none;
+  color: var(--color-text-primary);
+  font-size: 1.75rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  padding: 0;
+  line-height: 1.2;
+}
+
+.stepper__input:focus {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+.stepper__unit {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 2px;
+}
+
+/* ----- 7. Timer Screen ----- */
+#timer-screen {
+  gap: calc(var(--spacing) * 2);
+  transition: background-color var(--transition-phase);
+}
+
+.phase-banner {
+  padding: calc(var(--spacing) * 1) calc(var(--spacing) * 4);
+  border-radius: 100px;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  transition: background-color var(--transition-phase), color var(--transition-phase);
+  background: var(--color-surface-raised);
+  color: var(--color-text-secondary);
+}
+
+.round-display {
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+#current-round {
+  color: var(--color-text-primary);
+  font-weight: 700;
+}
+
+.timer-ring-container {
+  position: relative;
+  width: var(--ring-size);
+  height: var(--ring-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.timer-display {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.timer-display__time {
+  font-size: var(--timer-font-size);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Mono', 'Menlo', 'Consolas', 'Courier New', monospace;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  transition: color var(--transition-phase);
+  color: var(--color-text-primary);
+}
+
+/* ----- 8. Progress Ring ----- */
+.progress-ring {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.progress-ring__bg {
+  fill: none;
+  stroke: var(--color-surface-raised);
+  stroke-width: 6;
+}
+
+.progress-ring__fill {
+  fill: none;
+  stroke: var(--color-text-muted);
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-dasharray: var(--ring-circumference);
+  stroke-dashoffset: 0;
+  transition: stroke var(--transition-phase), stroke-dashoffset 0.15s linear;
+}
+
+/* ----- 9. Controls ----- */
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--spacing) * 4);
+  margin-top: calc(var(--spacing) * 2);
+}
+
+.control-icon--hidden {
+  display: none;
+}
+
+/* ----- 10. Complete Screen ----- */
+.complete-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: calc(var(--spacing) * 2);
+}
+
+.complete-icon {
+  color: var(--color-complete);
+  margin-bottom: calc(var(--spacing) * 1);
+  animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.complete-title {
+  font-size: clamp(1.5rem, 6vw, 2rem);
+  font-weight: 800;
+}
+
+.complete-summary {
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+/* ----- 11. Buttons ----- */
+.btn--start {
+  width: 100%;
+  max-width: 360px;
+  padding: calc(var(--spacing) * 2.2) calc(var(--spacing) * 3);
+  background: var(--color-accent);
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  border-radius: var(--border-radius);
+  letter-spacing: 0.03em;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+  margin-top: calc(var(--spacing) * 1);
+}
+
+.btn--start:active {
+  transform: scale(0.97);
+  background: var(--color-accent-hover);
+}
+
+.btn--control {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--color-surface-raised);
+  color: var(--color-text-secondary);
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.btn--control:active {
+  transform: scale(0.9);
+  background: var(--color-border);
+}
+
+.btn--playpause {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  color: #fff;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.btn--playpause:active {
+  transform: scale(0.92);
+  background: var(--color-accent-hover);
+}
+
+/* ----- 12. Phase States ----- */
+
+/* Countdown */
+body[data-phase="countdown"] #timer-screen {
+  background-color: var(--color-countdown-bg);
+}
+body[data-phase="countdown"] .phase-banner {
+  background-color: var(--color-countdown);
+  color: var(--color-bg);
+}
+body[data-phase="countdown"] .timer-display__time {
+  color: var(--color-countdown);
+}
+body[data-phase="countdown"] .progress-ring__fill {
+  stroke: var(--color-countdown);
+}
+
+/* Work */
+body[data-phase="work"] {
+  background-color: var(--color-work-bg);
+}
+body[data-phase="work"] #timer-screen {
+  background-color: var(--color-work-bg);
+}
+body[data-phase="work"] .phase-banner {
+  background-color: var(--color-work);
+  color: var(--color-bg);
+}
+body[data-phase="work"] .timer-display__time {
+  color: var(--color-work);
+}
+body[data-phase="work"] .progress-ring__fill {
+  stroke: var(--color-work);
+}
+body[data-phase="work"] .round-display {
+  color: rgba(0, 230, 118, 0.5);
+}
+body[data-phase="work"] #current-round {
+  color: var(--color-work);
+}
+
+/* Rest */
+body[data-phase="rest"] {
+  background-color: var(--color-rest-bg);
+}
+body[data-phase="rest"] #timer-screen {
+  background-color: var(--color-rest-bg);
+}
+body[data-phase="rest"] .phase-banner {
+  background-color: var(--color-rest);
+  color: var(--color-bg);
+}
+body[data-phase="rest"] .timer-display__time {
+  color: var(--color-rest);
+}
+body[data-phase="rest"] .progress-ring__fill {
+  stroke: var(--color-rest);
+}
+body[data-phase="rest"] .round-display {
+  color: rgba(68, 138, 255, 0.5);
+}
+body[data-phase="rest"] #current-round {
+  color: var(--color-rest);
+}
+
+/* ----- 13. Animations ----- */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.5); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.6; }
+}
+
+.timer-display--countdown-warning .timer-display__time {
+  animation: pulse 0.5s ease-in-out infinite;
+}
+
+/* ----- 14. Media Queries ----- */
+
+/* Shorter screens */
+@media (max-height: 600px) {
+  .screen {
+    padding: calc(var(--spacing) * 2);
+    gap: calc(var(--spacing) * 1);
+  }
+
+  .setup-header {
+    margin-bottom: calc(var(--spacing) * 2);
+  }
+
+  .settings-form {
+    gap: calc(var(--spacing) * 1.5);
+  }
+
+  .setting-group {
+    padding: calc(var(--spacing) * 1.5) calc(var(--spacing) * 2);
+  }
+
+  :root {
+    --ring-size: min(50vw, 200px);
+    --timer-font-size: clamp(2.5rem, 14vw, 5rem);
+  }
+}
+
+/* Wider screens / tablets */
+@media (min-width: 768px) {
+  .settings-form {
+    max-width: 420px;
+  }
+
+  .btn--start {
+    max-width: 420px;
+  }
+
+  :root {
+    --ring-size: 300px;
+  }
+}
