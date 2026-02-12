@@ -57,6 +57,16 @@
     return Math.max(min, Math.min(max, val));
   }
 
+  function sanitizeNumericInput(input, min, max, fallback) {
+    var parsed = parseInt(input.value, 10);
+    if (isNaN(parsed)) {
+      parsed = fallback;
+    }
+    var value = clamp(parsed, min, max);
+    input.value = String(value);
+    return value;
+  }
+
   function formatTime(totalSeconds) {
     var m = Math.floor(totalSeconds / 60);
     var s = totalSeconds % 60;
@@ -104,9 +114,9 @@
 
   function getSettings() {
     return {
-      workDuration: clamp(parseInt(dom.workInput.value, 10) || 30, 5, 300),
-      restDuration: clamp(parseInt(dom.restInput.value, 10) || 15, 5, 300),
-      rounds: clamp(parseInt(dom.roundsInput.value, 10) || 8, 1, 50)
+      workDuration: sanitizeNumericInput(dom.workInput, 5, 300, 30),
+      restDuration: sanitizeNumericInput(dom.restInput, 5, 300, 15),
+      rounds: sanitizeNumericInput(dom.roundsInput, 1, 50, 8)
     };
   }
 
