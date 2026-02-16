@@ -260,14 +260,40 @@ button {
 }
 
 .round-display {
-  font-size: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1em;
   color: var(--color-text-secondary);
   font-weight: 500;
 }
 
+.round-display__label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  opacity: 0.7;
+}
+
+.round-display__count {
+  font-size: 2.25rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+.round-display__sep {
+  opacity: 0.4;
+  margin: 0 0.05em;
+}
+
 #current-round {
   color: var(--color-text-primary);
-  font-weight: 700;
+  font-weight: 800;
+}
+
+#total-rounds {
+  opacity: 0.5;
 }
 
 .timer-ring-container {
@@ -449,10 +475,11 @@ body[data-phase="work"] .progress-ring__fill {
   stroke: var(--color-work);
 }
 body[data-phase="work"] .round-display {
-  color: rgba(0, 230, 118, 0.5);
+  color: rgba(0, 230, 118, 0.4);
 }
 body[data-phase="work"] #current-round {
   color: var(--color-work);
+  text-shadow: 0 0 20px rgba(0, 230, 118, 0.3);
 }
 
 /* Rest */
@@ -473,10 +500,11 @@ body[data-phase="rest"] .progress-ring__fill {
   stroke: var(--color-rest);
 }
 body[data-phase="rest"] .round-display {
-  color: rgba(68, 138, 255, 0.5);
+  color: rgba(68, 138, 255, 0.4);
 }
 body[data-phase="rest"] #current-round {
   color: var(--color-rest);
+  text-shadow: 0 0 20px rgba(68, 138, 255, 0.3);
 }
 
 /* ----- 13. Animations ----- */
